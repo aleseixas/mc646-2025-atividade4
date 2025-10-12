@@ -187,3 +187,51 @@ class TestEnergyManagementSystem:
         )
         assert r2.temperature_regulation_active is False
         assert r3.temperature_regulation_active is False
+
+    def test_daily_limit_with_only_essentials_does_not_turn_off_anything(self):
+        only_essentials = {"Security": 1, "Refrigerator": 1}
+        res = manage_energy(
+            current_price=0.10,
+            price_threshold=0.20,
+            current_time=t(16, 0),
+            current_temperature=22.0,
+            desired_temperature_range=(20.0, 24.0),
+            energy_usage_limit=5.0,
+            total_energy_used_today=5.0,
+            device_priorities=only_essentials,
+            scheduled_devices=[],
+        )
+        assert res.device_status.get("Security") is True
+        assert res.device_status.get("Refrigerator") is True
+
+    def test_schedule_does_not_match_time_keeps_states(self):
+        res = manage_energy(
+            current_price=0.40,
+            price_threshold=0.20,
+            current_time=t(19, 0),
+            current_temperature=22.0,
+            desired_temperature_range=(20.0, 24.0),
+            energy_usage_limit=100.0,
+            total_energy_used_today=10.0,
+            device_priorities=BASE_PRIORITIES,
+            scheduled_devices=[DeviceSchedule(device_name="Lights", scheduled_time=t(20, 0))],
+        )
+        assert res.energy_saving_mode is True
+        assert res.device_status.get("Lights") is False
+
+    def test_daily_limit_needs_more_cuts_than_available_devices_no_break(self):
+        res = manage_energy(
+            current_price=0.10,
+            price_threshold=0.20,
+            current_time=t(16, 0),
+            current_temperature=22.0,
+            desired_temperature_range=(20.0, 24.0),
+            energy_usage_limit=10.0,
+            total_energy_used_today=13.0,
+            device_priorities=BASE_PRIORITIES,
+            scheduled_devices=[],
+        )
+        assert res.device_status.get("Security") is True
+        assert res.device_status.get("Refrigerator") is True
+        assert res.device_status.get("Lights") is False
+        assert res.device_status.get("Washer") is False
