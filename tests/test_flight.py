@@ -7,7 +7,6 @@ from datetime import datetime, timedelta
 
 import pytest
 
-from src.flight.BookingResult import BookingResult
 from src.flight.FlightBookingSystem import FlightBookingSystem
 
 
