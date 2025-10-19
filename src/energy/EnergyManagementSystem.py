@@ -21,7 +21,7 @@ class SmartEnergyManagementSystem:
         energy_saving_mode = False
         temperature_regulation_active = False
 
-        # 1. Ativa o modo de economia de energia se o preço exceder o limite
+        # 1. Ativa o modo de economia de energia se o preco exceder o limite
         if current_price > price_threshold:
             energy_saving_mode = True
             for device, priority in device_priorities.items():
@@ -30,7 +30,7 @@ class SmartEnergyManagementSystem:
                 else:
                     device_status[device] = True 
         else:
-            # Sem modo de economia; mantém todos os dispositivos ligados inicialmente
+            # Sem modo de economia; mantem todos os dispositivos ligados inicialmente
             for device in device_priorities:
                 device_status[device] = True
 
@@ -40,7 +40,7 @@ class SmartEnergyManagementSystem:
                 if device not in ("Security", "Refrigerator"):
                     device_status[device] = False
 
-        # 3. Regulação de temperatura
+        # 3. Regulacao de temperatura
         if current_temperature < desired_temperature_range[0]:
             device_status["Heating"] = True
             temperature_regulation_active = True

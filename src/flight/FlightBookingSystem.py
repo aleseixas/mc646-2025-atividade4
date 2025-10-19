@@ -17,22 +17,22 @@ class FlightBookingSystem:
                     reward_points_available: int
                 ) -> BookingResult:
         """
-        Processa a reserva ou cancelamento de um voo com base nos parâmetros fornecidos.
+        Processa a reserva ou cancelamento de um voo com base nos parametros fornecidos.
         """
         final_price = 0.0
         refund_amount = 0.0
         confirmation = False
         points_used = False
 
-        # Verifica se há assentos suficientes disponíveis
+        # Verifica se ha assentos suficientes disponiveis
         if passengers > available_seats:
             return BookingResult(confirmation, final_price, refund_amount, points_used)
 
-        # Preço dinâmico com base no índice de vendas e demanda
+        # Preco dinamico com base no indice de vendas e demanda
         price_factor = (previous_sales / 100.0) * 0.8
         final_price = current_price * price_factor * passengers
 
-        # Taxa de última hora
+        # Taxa de ultima hora
         time_difference = departure_time - booking_time
         hours_to_departure = time_difference.total_seconds() / 3600
         
@@ -48,11 +48,11 @@ class FlightBookingSystem:
             final_price -= reward_points_available * 0.01
             points_used = True
         
-        # Garante que o preço não seja negativo
+        # Garante que o preco nao seja negativo
         if final_price < 0:
             final_price = 0
 
-        # Lógica para cancelamentos
+        # Logica para cancelamentos
         if is_cancellation:
             if hours_to_departure >= 48:
                 refund_amount = final_price
