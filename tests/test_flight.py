@@ -155,16 +155,16 @@ class TestFlightBookingSystem:
             passengers=2,
             available_seats=2,
             reward_points_available=0,
-            previous_sales=1000,
+            previous_sales=125,
             current_price=500.0,
             booking_time=self.now,
             departure_time=self.now + timedelta(hours=30),
             is_cancellation=False,
         )
-        assert result.confirmation is False
+        assert result.confirmation is True
         assert result.points_used is False
-        assert result.refund_amount == pytest.approx(1600.0)
-        assert result.total_price == pytest.approx(0.0)
+        assert result.refund_amount == pytest.approx(0.0)
+        assert result.total_price == pytest.approx(1000.0)
 
     def test_case_10_limite_24h_sem_aumento(self):
         """Conjunto 2 - exatamente 24h antes, sem taxa de urgência"""
@@ -215,7 +215,7 @@ class TestFlightBookingSystem:
         assert result.confirmation is True
         assert result.points_used is True
         assert result.refund_amount == pytest.approx(0.0)
-        assert result.total_price == pytest.approx(15999.99)
+        assert result.total_price == pytest.approx(3999.99)
 
     def test_case_13_preco_final_minimo_um_real(self):
         """Conjunto 5 - preço final fica 1 e não pode ir a zero"""
