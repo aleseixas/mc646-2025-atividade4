@@ -1,7 +1,7 @@
 import os
 import sys
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from datetime import datetime, timedelta
 
@@ -145,4 +145,108 @@ class TestFlightBookingSystem:
         assert result.points_used is False
         # Checar essa saida
         assert result.refund_amount == pytest.approx(1600.0)
+        assert result.total_price == pytest.approx(0.0)
+
+    # Caso feitos depois do uso da biblioteca mutmut
+    # Casos adicionais podem ser adicionados aqui para maior cobertura de teste
+    def test_case_9_assentos_iguais_passageiros(self):
+        """Conjunto 1 - assentos disponíveis == passageiros"""
+        result = FlightBookingSystem().book_flight(
+            passengers=2,
+            available_seats=2,
+            reward_points_available=0,
+            previous_sales=1000,
+            current_price=500.0,
+            booking_time=self.now,
+            departure_time=self.now + timedelta(hours=30),
+            is_cancellation=False,
+        )
+        assert result.confirmation is False
+        assert result.points_used is False
+        assert result.refund_amount == pytest.approx(1600.0)
+        assert result.total_price == pytest.approx(0.0)
+
+    def test_case_10_limite_24h_sem_aumento(self):
+        """Conjunto 2 - exatamente 24h antes, sem taxa de urgência"""
+        result = FlightBookingSystem().book_flight(
+            passengers=2,
+            available_seats=10,
+            reward_points_available=0,
+            previous_sales=1000,
+            current_price=500.0,
+            booking_time=self.now,
+            departure_time=self.now + timedelta(hours=24),
+            is_cancellation=False,
+        )
+        assert result.confirmation is True
+        assert result.points_used is False
+        assert result.refund_amount == pytest.approx(0.0)
+        assert result.total_price == pytest.approx(8000.0)
+
+    def test_case_11_sem_desconto_grupo_para_4(self):
+        """Conjunto 3 - sem desconto para 4 passageiros"""
+        result = FlightBookingSystem().book_flight(
+            passengers=4,
+            available_seats=10,
+            reward_points_available=0,
+            previous_sales=1000,
+            current_price=500.0,
+            booking_time=self.now,
+            departure_time=self.now + timedelta(hours=30),
+            is_cancellation=False,
+        )
+        assert result.confirmation is True
+        assert result.points_used is False
+        assert result.refund_amount == pytest.approx(0.0)
+        assert result.total_price == pytest.approx(16000.0)
+
+    def test_case_12_um_ponto_disponivel(self):
+        """Conjunto 4 - usa apenas 1 ponto"""
+        result = FlightBookingSystem().book_flight(
+            passengers=1,
+            available_seats=10,
+            reward_points_available=1,
+            previous_sales=1000,
+            current_price=500.0,
+            booking_time=self.now,
+            departure_time=self.now + timedelta(hours=30),
+            is_cancellation=False,
+        )
+        assert result.confirmation is True
+        assert result.points_used is True
+        assert result.refund_amount == pytest.approx(0.0)
+        assert result.total_price == pytest.approx(15999.99)
+
+    def test_case_13_preco_final_minimo_um_real(self):
+        """Conjunto 5 - preço final fica 1 e não pode ir a zero"""
+        result = FlightBookingSystem().book_flight(
+            passengers=1,
+            available_seats=10,
+            reward_points_available=0,
+            previous_sales=125,
+            current_price=1.0,
+            booking_time=self.now,
+            departure_time=self.now + timedelta(hours=30),
+            is_cancellation=False,
+        )
+        assert result.confirmation is True
+        assert result.points_used is False
+        assert result.refund_amount == pytest.approx(0.0)
+        assert result.total_price == pytest.approx(1.0)
+
+    def test_case_14_cancelamento_reembolso_esperado(self):
+        """Conjunto 6 - cancelamento com reembolso fixo esperado"""
+        result = FlightBookingSystem().book_flight(
+            passengers=2,
+            available_seats=10,
+            reward_points_available=0,
+            previous_sales=125,
+            current_price=400.0,
+            booking_time=self.now,
+            departure_time=self.now + timedelta(hours=48),
+            is_cancellation=True,
+        )
+        assert result.confirmation is False
+        assert result.points_used is False
+        assert result.refund_amount == pytest.approx(800.0)
         assert result.total_price == pytest.approx(0.0)
