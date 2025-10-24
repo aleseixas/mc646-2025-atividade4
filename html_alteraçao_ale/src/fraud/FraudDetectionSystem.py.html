@@ -1,0 +1,133 @@
+<html><body><h1>src/fraud/FraudDetectionSystem.py</h1>Killed 48 out of 60 mutants<h2>Survived</h2>Survived mutation testing. These mutants show holes in your test suite.<h3>Mutant 78</h3><pre>--- src/fraud/FraudDetectionSystem.py
++++ src/fraud/FraudDetectionSystem.py
+@@ -22,7 +22,7 @@
+         if current_transaction.amount > 10000:
+             is_fraudulent = True
+             verification_required = True
+-            risk_score += 50
++            risk_score = 50
+ 
+         # 2. Verifica por transacoes excessivas na ultima hora
+         recent_transaction_count = 0
+</pre><h3>Mutant 81</h3><pre>--- src/fraud/FraudDetectionSystem.py
++++ src/fraud/FraudDetectionSystem.py
+@@ -25,7 +25,7 @@
+             risk_score += 50
+ 
+         # 2. Verifica por transacoes excessivas na ultima hora
+-        recent_transaction_count = 0
++        recent_transaction_count = 1
+         for transaction in previous_transactions:
+             time_difference = current_transaction.timestamp - transaction.timestamp
+             time_diff_minutes = time_difference.total_seconds() / 60
+</pre><h3>Mutant 86</h3><pre>--- src/fraud/FraudDetectionSystem.py
++++ src/fraud/FraudDetectionSystem.py
+@@ -28,7 +28,7 @@
+         recent_transaction_count = 0
+         for transaction in previous_transactions:
+             time_difference = current_transaction.timestamp - transaction.timestamp
+-            time_diff_minutes = time_difference.total_seconds() / 60
++            time_diff_minutes = time_difference.total_seconds() / 61
+             if time_diff_minutes <= 60:
+                 recent_transaction_count += 1
+         
+</pre><h3>Mutant 88</h3><pre>--- src/fraud/FraudDetectionSystem.py
++++ src/fraud/FraudDetectionSystem.py
+@@ -29,7 +29,7 @@
+         for transaction in previous_transactions:
+             time_difference = current_transaction.timestamp - transaction.timestamp
+             time_diff_minutes = time_difference.total_seconds() / 60
+-            if time_diff_minutes <= 60:
++            if time_diff_minutes < 60:
+                 recent_transaction_count += 1
+         
+         if recent_transaction_count > 10:
+</pre><h3>Mutant 89</h3><pre>--- src/fraud/FraudDetectionSystem.py
++++ src/fraud/FraudDetectionSystem.py
+@@ -29,7 +29,7 @@
+         for transaction in previous_transactions:
+             time_difference = current_transaction.timestamp - transaction.timestamp
+             time_diff_minutes = time_difference.total_seconds() / 60
+-            if time_diff_minutes <= 60:
++            if time_diff_minutes <= 61:
+                 recent_transaction_count += 1
+         
+         if recent_transaction_count > 10:
+</pre><h3>Mutant 92</h3><pre>--- src/fraud/FraudDetectionSystem.py
++++ src/fraud/FraudDetectionSystem.py
+@@ -30,7 +30,7 @@
+             time_difference = current_transaction.timestamp - transaction.timestamp
+             time_diff_minutes = time_difference.total_seconds() / 60
+             if time_diff_minutes <= 60:
+-                recent_transaction_count += 1
++                recent_transaction_count += 2
+         
+         if recent_transaction_count > 10:
+             is_blocked = True
+</pre><h3>Mutant 93</h3><pre>--- src/fraud/FraudDetectionSystem.py
++++ src/fraud/FraudDetectionSystem.py
+@@ -32,7 +32,7 @@
+             if time_diff_minutes <= 60:
+                 recent_transaction_count += 1
+         
+-        if recent_transaction_count > 10:
++        if recent_transaction_count >= 10:
+             is_blocked = True
+             risk_score += 30
+ 
+</pre><h3>Mutant 97</h3><pre>--- src/fraud/FraudDetectionSystem.py
++++ src/fraud/FraudDetectionSystem.py
+@@ -34,7 +34,7 @@
+         
+         if recent_transaction_count > 10:
+             is_blocked = True
+-            risk_score += 30
++            risk_score = 30
+ 
+         # 3. Verifica mudanca de localizacao em um curto periodo de tempo
+         if previous_transactions:
+</pre><h3>Mutant 106</h3><pre>--- src/fraud/FraudDetectionSystem.py
++++ src/fraud/FraudDetectionSystem.py
+@@ -40,7 +40,7 @@
+         if previous_transactions:
+             last_transaction = previous_transactions[-1]
+             time_since_last = current_transaction.timestamp - last_transaction.timestamp
+-            minutes_since_last = time_since_last.total_seconds() / 60
++            minutes_since_last = time_since_last.total_seconds() / 61
+             
+             if minutes_since_last < 30 and last_transaction.location != current_transaction.location:
+                 is_fraudulent = True
+</pre><h3>Mutant 108</h3><pre>--- src/fraud/FraudDetectionSystem.py
++++ src/fraud/FraudDetectionSystem.py
+@@ -42,7 +42,7 @@
+             time_since_last = current_transaction.timestamp - last_transaction.timestamp
+             minutes_since_last = time_since_last.total_seconds() / 60
+             
+-            if minutes_since_last < 30 and last_transaction.location != current_transaction.location:
++            if minutes_since_last <= 30 and last_transaction.location != current_transaction.location:
+                 is_fraudulent = True
+                 verification_required = True
+                 risk_score += 20
+</pre><h3>Mutant 109</h3><pre>--- src/fraud/FraudDetectionSystem.py
++++ src/fraud/FraudDetectionSystem.py
+@@ -42,7 +42,7 @@
+             time_since_last = current_transaction.timestamp - last_transaction.timestamp
+             minutes_since_last = time_since_last.total_seconds() / 60
+             
+-            if minutes_since_last < 30 and last_transaction.location != current_transaction.location:
++            if minutes_since_last < 31 and last_transaction.location != current_transaction.location:
+                 is_fraudulent = True
+                 verification_required = True
+                 risk_score += 20
+</pre><h3>Mutant 116</h3><pre>--- src/fraud/FraudDetectionSystem.py
++++ src/fraud/FraudDetectionSystem.py
+@@ -45,7 +45,7 @@
+             if minutes_since_last < 30 and last_transaction.location != current_transaction.location:
+                 is_fraudulent = True
+                 verification_required = True
+-                risk_score += 20
++                risk_score = 20
+ 
+         # 4. Verifica se a localizacao esta na lista de bloqueio (blacklist)
+         if current_transaction.location in blacklisted_locations:
+</pre></body></html>
