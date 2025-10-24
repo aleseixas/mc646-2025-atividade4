@@ -6,6 +6,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from datetime import datetime
 
 from src.energy.DeviceSchedule import DeviceSchedule
+from src.energy.EnergyManagementResult import EnergyManagementResult
 
 try:
     from src.energy.EnergyManagementSystem import manage_energy
@@ -241,3 +242,36 @@ class TestEnergyManagementSystem:
         assert res.device_status.get("Refrigerator") is True
         assert res.device_status.get("Lights") is False
         assert res.device_status.get("Washer") is False
+
+
+# parte nova do código
+
+def test_result_init_preserves_fields():
+    r = EnergyManagementResult(
+        device_status={"Security": True, "Refrigerator": True, "Lights": False},
+        energy_saving_mode=True,
+        temperature_regulation_active=False,
+        total_energy_used=12.5,
+    )
+    # mata o mutante que troca total_energy_used por None
+    assert r.total_energy_used == 12.5
+    # sanity
+    assert r.energy_saving_mode is True
+    assert r.temperature_regulation_active is False
+    assert r.device_status == {"Security": True, "Refrigerator": True, "Lights": False}
+
+def test_result_repr_is_exact():
+    r = EnergyManagementResult(
+        device_status={"A": True},
+        energy_saving_mode=False,
+        temperature_regulation_active=True,
+        total_energy_used=3.0,
+    )
+    expected = (
+        "EnergyManagementResult(device_status={'A': True}, "
+        "energy_saving_mode=False, "
+        "temperature_regulation_active=True, "
+        "total_energy_used=3.0)"
+    )
+    # mata os mutantes que injetam 'XX' no repr
+    assert repr(r) == expected
